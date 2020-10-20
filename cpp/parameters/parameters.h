@@ -140,12 +140,14 @@ class Parameters {
       ifs_parameters.close();
       //] Check the number of parameters
       if ( count_parameters != num_parameters ) {
-        std::cerr << "Error: The number of parametes is wrong." << std::endl;
+        std::cerr << "Error: In the file '" << file_name_parammeters << "'." << std::endl;
+        std::cerr << "       The number of parametes is wrong." << std::endl;
         flag_err = 1;
       }
       //] Check other errors
       if ( param_1 <= param_2 ) {
-        std::cerr << "Error: param_2 must be param_2 < param_1." << std::endl;
+        std::cerr << "Error: In the file '" << file_name_parammeters << "'." << std::endl;
+        std::cerr << "       param_2 must be param_2 < param_1." << std::endl;
         std::cerr << "       param_2 = " << param_2 << "." << std::endl;
         std::cerr << "       param_1 = " << param_1 << "." << std::endl;
         flag_err = 1;
