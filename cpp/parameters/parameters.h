@@ -1,0 +1,155 @@
+#pragma once
+
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
+
+
+namespace Hoge {
+
+//] This file describes the Parameters class.
+//] This class has the below member variables and methods.
+//]
+//] Variables (@: private member )
+//] ==============================
+//]   | Type                  | Name
+//] --|-----------------------|------------------------------
+//]   | static constexpr int  | num_parameters
+//]   | static constexpr char | comment_line_symbol
+//]   | int                   | param_1
+//]   | int                   | param_2
+//]   | std::string           | file_name_1
+//] --|-----------------------|------------------------------
+//]
+//] Methods (@: private member )
+//] ============================
+//]   | Type              | Methods name | Arguments
+//] --|-------------------|--------------|-----------------------------------------------------
+//]   |                   | Parameters   |
+//]   |                   | Parameters   | const int param_1_arg
+//]   |                   |              | const int param_2_arg
+//]   |                   |              | const std::string file_name_1_arg
+//]   |                   | Parameters   | const std::string file_name_parammeters
+//] --|-------------------|--------------|-----------------------------------------------------
+//]   | void              | ReadFile     | const std::string file_name_parammeters
+//] --|-------------------|--------------|-----------------------------------------------------
+//]
+//]
+//] The example of parameters file is as follows
+//] The function 'ReadFile' ignores blank lines and lines with
+//] starting from the character which is determined by the
+//] variable 'comment_line_symbol'.
+//]
+//] parameters_tmp.txt
+//] =====================
+//] param_1 10
+//] param_2 4
+//] file_name_1 temp.txt
+//] =====================
+
+class Parameters {
+  public:
+    //] Variables
+    static constexpr int num_parameters = 3;
+    static constexpr char comment_line_symbol = '#';
+    int param_1;
+    int param_2;
+    std::string file_name_1;
+
+    //] Constructor
+    Parameters()
+      :param_1(0),
+       param_2(0),
+       file_name_1("")
+    {}
+
+    //] Constructor
+    Parameters( const int param_1_arg,
+                const int param_2_arg,
+                const int num_generations_arg,
+                const std::string file_name_1_arg)
+      :param_1(param_1_arg),
+       param_2(param_2_arg),
+       file_name_1(file_name_1_arg)
+    {}
+
+    //] Constructor
+    Parameters( const std::string file_name_parammeters ) {
+      ReadFile( file_name_parammeters );
+    }
+
+    //] Read parameters file
+    void ReadFile( const std::string file_name_parammeters ) {
+      int count_parameters = 0;
+      bool flag_err = 0;
+      int line_number = 0;
+      //] Open a file
+      std::ifstream ifs_parameters( file_name_parammeters );
+      if ( !ifs_parameters ) {
+        std::cerr << "Error: cannot open the file '" << file_name_parammeters << "'." << std::endl;
+        exit(EXIT_FAILURE);
+      }
+      //] Read lines
+      std::string oneline;
+      while ( ifs_parameters ) {
+        //] Get a line number
+        line_number++;
+        //] Read one line
+        std::getline(ifs_parameters, oneline);
+        std::istringstream iss_buff(oneline);
+        std::string parameter_name;
+        iss_buff >> parameter_name;
+        //] Read a parameter
+        if ( parameter_name == "param_1" ) {
+          //] Param_1
+          count_parameters++;
+          iss_buff >> param_1;
+          if ( param_1 <= 0 ) {
+            std::cerr << "Error: The " << line_number <<"-th line in '" << file_name_parammeters << "'." << std::endl;
+            std::cerr << "       param_1 must be positive." << std::endl;
+            std::cerr << "       param_1 = " << param_1 << "." << std::endl;
+            flag_err = 1;
+          }
+        } else if ( parameter_name == "param_2" ) {
+          //] param_2
+          count_parameters++;
+          iss_buff >> param_2;
+          if ( param_2 < 0 || param_1 <= param_2 ) {
+            std::cerr << "Error: The " << line_number <<"-th line in '" << file_name_parammeters << "'." << std::endl;
+            std::cerr << "       param_2 must be 0 <= param_2 < param_1." << std::endl;
+            std::cerr << "       param_2 = " << param_2 << "." << std::endl;
+            std::cerr << "       param_1 = " << param_1 << "." << std::endl;
+            flag_err = 1;
+          }
+        } else if ( parameter_name == "file_name_1" ) {
+          //] file_name_1
+          count_parameters++;
+          iss_buff >> file_name_1;
+        } else if ( parameter_name.empty() ) {
+          //] Blank line
+        } else if ( parameter_name.front() == comment_line_symbol ) {
+          //] Comment line
+        } else {
+          //] Others
+          std::cerr << "Error: The " << line_number <<"-th line in '" << file_name_parammeters << "'." << std::endl;
+          std::cerr << "       '" << parameter_name << "' is a wrong parameter." << std::endl;
+          flag_err = 1;
+        }
+      }
+      //] Check the number of parameters
+      if ( count_parameters != num_parameters ) {
+        std::cerr << "Error: The number of parametes is wrong." << std::endl;
+        flag_err = 1;
+      }
+      //] Close a file
+      ifs_parameters.close();
+      //] Error check
+      if ( flag_err ) {
+        exit(EXIT_FAILURE);
+      }
+    }
+
+};
+
+} //] namespace Hoge
