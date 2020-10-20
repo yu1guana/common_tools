@@ -115,11 +115,10 @@ class Parameters {
           //] param_2
           count_parameters++;
           iss_buff >> param_2;
-          if ( param_2 < 0 || param_1 <= param_2 ) {
+          if ( param_2 < 0 ) {
             std::cerr << "Error: The " << line_number <<"-th line in '" << file_name_parammeters << "'." << std::endl;
-            std::cerr << "       param_2 must be 0 <= param_2 < param_1." << std::endl;
+            std::cerr << "       param_2 must not be negative." << std::endl;
             std::cerr << "       param_2 = " << param_2 << "." << std::endl;
-            std::cerr << "       param_1 = " << param_1 << "." << std::endl;
             flag_err = 1;
           }
         } else if ( parameter_name == "file_name_1" ) {
@@ -137,13 +136,20 @@ class Parameters {
           flag_err = 1;
         }
       }
+      //] Close a file
+      ifs_parameters.close();
       //] Check the number of parameters
       if ( count_parameters != num_parameters ) {
         std::cerr << "Error: The number of parametes is wrong." << std::endl;
         flag_err = 1;
       }
-      //] Close a file
-      ifs_parameters.close();
+      //] Check other errors
+      if ( param_1 <= param_2 ) {
+        std::cerr << "Error: param_2 must be param_2 < param_1." << std::endl;
+        std::cerr << "       param_2 = " << param_2 << "." << std::endl;
+        std::cerr << "       param_1 = " << param_1 << "." << std::endl;
+        flag_err = 1;
+      }
       //] Error check
       if ( flag_err ) {
         exit(EXIT_FAILURE);
