@@ -2,4 +2,4 @@
 param_1     10
 # This is a comment line
 param_2     4
-file_name_1 temp.txt
+fileName_1 temp.txt
