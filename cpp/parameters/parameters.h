@@ -67,7 +67,6 @@ class Parameters {
     //] Constructor
     Parameters( const int param_1_arg,
                 const int param_2_arg,
-                const int num_generations_arg,
                 const std::string fileName_1_arg)
       :param_1(param_1_arg),
        param_2(param_2_arg),
